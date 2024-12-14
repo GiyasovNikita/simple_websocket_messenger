@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Простейший чат</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #c7c5c5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        #chat {
+            width: 100%;
+            max-width: 450px;
+            height: 400px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 5px;
+            background-color: #e1f5fe;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .message.user {
+            background-color: #c8e6c9;
+            align-self: flex-end;
+        }
+
+        #input {
+            width: 100%;
+            max-width: 450px;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+            outline: none;
+            margin-top: 10px;
+        }
+
+        #sendButton {
+            padding: 10px 20px;
+            background-color: #009688;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        #sendButton:hover {
+            background-color: #00796b;
+        }
+
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Чат</h1>
+        <div id="chat">
+            <div id="messages" class="message-list"></div>
+        </div>
+        <input type="text" id="input" placeholder="Введите сообщение..." onkeydown="if(event.keyCode == 13) sendMessage()">
+        <button id="sendButton" onclick="sendMessage()">Отправить</button>
+    </div>
+    <script src="chat.js"></script>
+</body>
+</html>
