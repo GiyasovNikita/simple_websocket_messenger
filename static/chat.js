@@ -1,5 +1,6 @@
 const ws = new WebSocket("ws://localhost:8888/websocket");
 
+
 ws.onmessage = function (event) {
     try {
         const data = JSON.parse(event.data);
@@ -22,15 +23,16 @@ ws.onmessage = function (event) {
 };
 
 function displayChatMessage(sender, message) {
-    const chat = document.getElementById("chat");
+    const chat = document.getElementById("messages");
     const messageElement = document.createElement("div");
     messageElement.textContent = `${sender}: ${message}`;
     chat.appendChild(messageElement);
+    chat.scrollTop = chat.scrollHeight;
 }
 
 function updateClientsList(clients) {
     const clientsList = document.getElementById("clients");
-    clientsList.innerHTML = "";
+    clientsList.innerHTML = "<strong>Клиенты онлайн:</strong>";
 
     clients.forEach((client) => {
         const clientItem = document.createElement("div");
@@ -40,8 +42,14 @@ function updateClientsList(clients) {
 }
 
 function sendMessage() {
-    const input = document.getElementById("message");
+    const input = document.getElementById("input");
+    if (!input) {
+        console.error("Поле ввода с id='input' не найдено!");
+        return;
+    }
+
     const message = input.value.trim();
+    console.log("Отправка сообщения:", message);
     if (message) {
         ws.send(message);
         input.value = "";

@@ -20,6 +20,16 @@
             color: #333;
         }
 
+        #clients {
+            width: 100%;
+            max-width: 450px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
         #chat {
             width: 100%;
             max-width: 450px;
@@ -74,12 +84,12 @@
         #sendButton:hover {
             background-color: #00796b;
         }
-
     </style>
 </head>
 <body>
     <div>
         <h1>Чат</h1>
+        <div id="clients"><strong>Клиенты онлайн:</strong></div>
         <div id="chat">
             <div id="messages" class="message-list"></div>
         </div>

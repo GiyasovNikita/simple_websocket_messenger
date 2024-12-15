@@ -9,6 +9,7 @@ import uuid
 
 redis_client = redis.StrictRedis(host='localhost', port=6379, decode_responses=True)
 
+
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
     clients = set()
 
@@ -20,7 +21,6 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         self.clients.add(self)
 
         redis_client.sadd("online_clients", self.username)
-
         self.update_clients_list()
 
         self.write_message(json.dumps({
@@ -28,8 +28,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
             "message": f"Добро пожаловать в чат, {self.username}!"
         }))
 
-
     def on_message(self, message):
+        print(f"Получено сообщение от {self.username}: {message}")
         data = {
             "type": "message",
             "data": {
@@ -42,21 +42,17 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
     def on_close(self):
         self.clients.remove(self)
         redis_client.srem("online_clients", self.username)
-
         self.update_clients_list()
-
 
     def check_origin(self, origin):
         return True
 
     def update_clients_list(self):
         online_clients = list(redis_client.smembers("online_clients"))
-
         data = {
             "type": "clients",
             "clients": online_clients
         }
-
         for client in self.clients:
             client.write_message(json.dumps(data))
 
@@ -66,6 +62,7 @@ async def redis_listener():
     pubsub.subscribe("chat_channel")
     for message in pubsub.listen():
         if message["type"] == "message":
+            print(f"Redis Listener получил сообщение: {message}")
             data = json.loads(message["data"])
             for client in WebSocketHandler.clients:
                 client.write_message(json.dumps(data))
@@ -78,6 +75,9 @@ def start_redis_listener():
 
 
 if __name__ == "__main__":
+    # Очистка списка клиентов при старте
+    redis_client.delete("online_clients")
+
     app = tornado.web.Application([
         (r"/websocket", WebSocketHandler),
         (r"/(.*)", tornado.web.StaticFileHandler, {"path": "./static", "default_filename": "index.html"})
@@ -86,5 +86,4 @@ if __name__ == "__main__":
 
     print("Сервер запущен: http://localhost:8888")
     threading.Thread(target=start_redis_listener, daemon=True).start()
-
     tornado.ioloop.IOLoop.current().start()
